@@ -18,34 +18,25 @@ public class ImageEx extends Image {
   } 
 
   public void kochCurve(int px, int py, int qx, int qy, int l) {
-    System.out.println("px antes das contas: " + px + " py antes das contas: " + py);
-    System.out.println("qx antes das contas: " + qx + " qy antes das contas: " + qy);
-
     // distancia de PQ
     double raizX = (double) Math.pow((qx - px), 2);
-    System.out.println("quadradoX: " + raizX);
     double raizY = (double) Math.pow((qy - py), 2);
-    System.out.println("quadradoY: " + raizY);
     double dist = Math.sqrt(raizX + raizY);
-    System.out.println("dist: " + dist);
-
+    
     if (dist < l)
       drawLine(px, py, qx, qy); // desenha o segmento PQ
     else {
       // calculando A
       double RAx = calcPontos(px, qx, 1.0 / 3.0);
       double RAy = calcPontos(py, qy, 1.0 / 3.0);
-      System.out.println("RAx " + RAx + " RAy: " + RAy);
 
       // calculando C
       double RCx = calcPontos(px, qx, 2.0 / 3.0);
       double RCy = calcPontos(py, qy, 2.0 / 3.0);
-      System.out.println("RCx " + RCx + " RAy: " + RCy);
 
       // ponto medio de PQ
       double Mx = calcPontos(px, qx, 1.0 / 2.0);
       double My = calcPontos(py, qy, 1.0 / 2.0);
-      System.out.println("Mx " + Mx + " My: " + My);
 
       double vx = (double) qx - (double) px;
      
@@ -58,22 +49,8 @@ public class ImageEx extends Image {
       double ux = rvx * Math.sqrt(3) / 6.0;
       double uy = rvy * Math.sqrt(3) / 6.0;
 
-
       double BxDb = Mx + ux;
       double ByDb = My + uy;
-      // rv = vetor penperdicular a v
-      // double rv = 
-      //     Math.sqrt(Math.pow(((double) qy - (double) py), 2) 
-      //   + (Math.pow(((double) qx - (double) px * -1.0), 2)));
-      // System.out.println("rv: " + rv);
-
-      // // u = vetor que liga M a B
-      // double u = (Math.abs(rv) * Math.sqrt(3)) / 6.0;
-      // System.out.println("u " + u);
-
-      // double BxDb =  Math.abs(((Math.sqrt(3)*RAx+ 2*Mx)/2)+Math.sqrt(3));
-      // double ByDb =  Math.abs(((Math.sqrt(3)*RAy+ 2*My)/2)+Math.sqrt(3));
-      System.out.println("BxDb " + BxDb + " ByDb: " + ByDb);
 
       int Ax = (int) Math.round(RAx);
       int Ay = (int) Math.round(RAy);
@@ -82,25 +59,39 @@ public class ImageEx extends Image {
       int Cx = (int) Math.round(RCx);
       int Cy = (int) Math.round(RCy);
 
-      System.out.println("Ax " + Ax + " Ay: " + Ay);
-      System.out.println("Bx " + Bx + " By: " + By);
-      System.out.println("Cx " + Cx + " Cy: " + Cy);
-      System.out.println("px " + px + " py: " + py);
-      System.out.println("qx " + qx + " qy: " + qy);
-
-      drawLine(px, py, Ax, Ay);
-      drawLine(Ax, Ay, Bx, By);
-      drawLine(Bx, By, Cx, Cy);
-      drawLine(Cx, Cy, qx, qy);
-
       kochCurve(px, py, Ax, Ay, l);
-      kochCurve(Ax, Ay, Bx, By, l);
       kochCurve(Bx, By, Cx, Cy, l);
+      kochCurve(Ax, Ay, Bx, By, l);
       kochCurve(Cx, Cy, qx, qy, l);
     }
   }
 
   public void regionFill(int x, int y, int reference_rgb) {
 
+    // caso o valor de cor do pixel (recebido como parâmetro)
+    // seja o mesmo da cor original do pixel inicial (aonde se inciou o processo de preenchimento)
+    if (getPixel(0, 0) == getPixel(x, y)) {
+      System.out.println("aAAAAAAAaaaaaaaaaaaaaaa");
+      setPixel(x, y);
+    }
+
+    System.out.println("BBBBBBBBBBBBBBBB");
+    // ESQUERDA
+     if(x - 1 > 0 && y > 0) regionFill(x - 1, y, reference_rgb);
+    //  DIREITA
+     if(x + 1 > 0 && y > 0) regionFill(x + 1, y, reference_rgb);
+    //  CIMA
+     if(x > 0 && y + 1 > 0) regionFill(x, y + 1, reference_rgb);
+    //  BAIXO
+     if(x > 0 && y - 1 > 0) regionFill(x, y - 1, reference_rgb);
+
+    //        então tal pixel é colorido e,
+    //        em seguida, chamase o algoritmo recursivamente para os pixels vizinhos
+    //        (à esquerda, à direita, acima e abaixo);
+    // caso contrário, nada é feito.
+    
+    // Para obter-se a cor de um determinado pixel pode-se usar o método getPixel
+    // e para colorir um pixel (com a cor previamente denida pelo método setColor) pode-se usar o método
+    // setPixel (funções estas pertencentes à classe Image).
   }
 }

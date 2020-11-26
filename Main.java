@@ -34,6 +34,11 @@ public class Main {
 
 				image.kochCurve(scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), scanner.nextInt());
 			}
+
+			if(command.equals("REGION_FILL")){
+
+				image.regionFill(scanner.nextInt(), scanner.nextInt(), 255);
+			}
 		}
 
 		image.save(outputFileName);
