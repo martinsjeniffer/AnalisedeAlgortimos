@@ -36,8 +36,10 @@ public class Main {
 			}
 
 			if(command.equals("REGION_FILL")){
+				int x = scanner.nextInt();
+				int y = scanner.nextInt();
 
-				image.regionFill(scanner.nextInt(), scanner.nextInt(), 255);
+				image.regionFill(x, y, image.getPixel(x, y));
 			}
 		}
 

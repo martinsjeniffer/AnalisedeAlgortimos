@@ -70,20 +70,15 @@ public class ImageEx extends Image {
 
     // caso o valor de cor do pixel (recebido como parâmetro)
     // seja o mesmo da cor original do pixel inicial (aonde se inciou o processo de preenchimento)
-    if (getPixel(0, 0) == getPixel(x, y)) {
-      System.out.println("aAAAAAAAaaaaaaaaaaaaaaa");
+    // System.out.println("\ngetHeight: "+getHeight()+"\ngetWIdth: "+getWidth());
+    if (getPixel(x, y) == reference_rgb) {
+      // System.out.println("x: "+x+"\ny: "+y+"\nreference: "+reference_rgb+"\n");
       setPixel(x, y);
+      if(x + 1 < getWidth()) regionFill(x+1, y, reference_rgb); //direita
+      if(y + 1 < getHeight()) regionFill(x, y+1, reference_rgb); //cima
+      if(x - 1 >= 0) regionFill(x-1, y, reference_rgb); //esquerda
+      if(y - 1 >= 0)regionFill(x, y-1, reference_rgb); // baixo
     }
-
-    System.out.println("BBBBBBBBBBBBBBBB");
-    // ESQUERDA
-     if(x - 1 > 0 && y > 0) regionFill(x - 1, y, reference_rgb);
-    //  DIREITA
-     if(x + 1 > 0 && y > 0) regionFill(x + 1, y, reference_rgb);
-    //  CIMA
-     if(x > 0 && y + 1 > 0) regionFill(x, y + 1, reference_rgb);
-    //  BAIXO
-     if(x > 0 && y - 1 > 0) regionFill(x, y - 1, reference_rgb);
 
     //        então tal pixel é colorido e,
     //        em seguida, chamase o algoritmo recursivamente para os pixels vizinhos
