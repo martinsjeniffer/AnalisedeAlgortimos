@@ -1,92 +1,108 @@
-// Esqueleto da classe na qual devem ser implementadas as novas funcionalidades de desenho
+/*********************************************************************/
+/**   ACH2003 - Introducao a Analise de Algoritmos                  **/
+/**   EACH-USP - Segundo Semestre de 2020                           **/
+/**   Prof. Flavio Luiz Coutinho                                    **/
+/**                                                                 **/
+/**   EP1 - Recursividade aplicada a computacao grafica             **/
+/**                                                                 **/
+/**   Jeniffer Florinda Martins da Silva          10377966          **/
+/**                                                                 **/
+/*********************************************************************/
 
 public class ImageEx extends Image {
-
   public ImageEx(int w, int h, int r, int g, int b) {
-
     super(w, h, r, g, b);
   }
 
   public ImageEx(int w, int h) {
-
     super(w, h);
   }
 
-  public static double calcPontos (double p1, double p2, double alpha) //calcula a pos dos pontos A, C e 
-  {
-    return ((1.0 - (alpha)) * (double) p1 + (alpha) * (double) p2);
-  } 
+  /**
+   * O metodo combinacaoAfim, calcula um ponto R qualquer dentro da reta
+   * que vai do ponto1 ao ponto2 com o auxilio de um parametro alpha.
+   * 
+   * @param ponto1
+   * @param ponto2
+   * @param alpha
+   */
+  public static double combinacaoAfim(double ponto1, double ponto2, double alpha) {
+    return (((1.0 - alpha) * (double) ponto1) + (alpha * (double) ponto2));
+  }
+
+  /**
+   * O metodo comprimentoPQ calcula o comprimento da reta PQ por meio da
+   * formula da distancia, utilizando as coordenadas de P e de Q.
+   * 
+   * @param px
+   * @param py
+   * @param qx
+   * @param qy
+   * @return sqrt(((qx - px) ** 2 + (qy - py) ** 2))
+   */
+  public static double comprimentoPQ(int px, int py, int qx, int qy) {
+    double[] raiz = new double[2];
+    raiz[0] = (double) Math.pow((qx - px), 2);
+    raiz[1] = (double) Math.pow((qy - py), 2);
+    return Math.sqrt(raiz[0] + raiz[1]);
+  }
 
   public void kochCurve(int px, int py, int qx, int qy, int l) {
-    // distancia de PQ
-    double raizX = (double) Math.pow((qx - px), 2);
-    double raizY = (double) Math.pow((qy - py), 2);
-    double dist = Math.sqrt(raizX + raizY);
-    
-    if (dist < l)
-      drawLine(px, py, qx, qy); // desenha o segmento PQ
+    int x = 0;
+    int y = 1;
+
+    if (comprimentoPQ(px, py, qx, qy) < l)
+      drawLine(px, py, qx, qy);
     else {
-      // calculando A
-      double RAx = calcPontos(px, qx, 1.0 / 3.0);
-      double RAy = calcPontos(py, qy, 1.0 / 3.0);
+      double[] pontoA = new double[2];
+      pontoA[x] = Math.round(combinacaoAfim(px, qx, 1.0 / 3.0));
+      pontoA[y] = Math.round(combinacaoAfim(py, qy, 1.0 / 3.0));
 
-      // calculando C
-      double RCx = calcPontos(px, qx, 2.0 / 3.0);
-      double RCy = calcPontos(py, qy, 2.0 / 3.0);
+      double[] pontoC = new double[2];
+      pontoC[x] = Math.round(combinacaoAfim(px, qx, 2.0 / 3.0));
+      pontoC[y] = Math.round(combinacaoAfim(py, qy, 2.0 / 3.0));
 
-      // ponto medio de PQ
-      double Mx = calcPontos(px, qx, 1.0 / 2.0);
-      double My = calcPontos(py, qy, 1.0 / 2.0);
+      /**
+       * Para o calculo do ponto B, precisamos das seguintes informacoes:
+       *    - coordenadas do ponto Medio de PQ,
+       *    - vetor que liga P ate Q ROTACIONADO,
+       *    - vetor que liga o ponto Medio ao ponto B
+       */
+      double[] pontoMedio = new double[2];
+      pontoMedio[x] = combinacaoAfim(px, qx, 1.0 / 2.0);
+      pontoMedio[y] = combinacaoAfim(py, qy, 1.0 / 2.0);
 
-      double vx = (double) qx - (double) px;
-     
-      double vy = (double) qy - (double) py;
+      double[] rotatePQ = new double[2];
+      rotatePQ[x] = (double) qy - (double) py;
+      rotatePQ[y] = -((double) qx - (double) px);
 
-      double rvx = vy;
+      double[] MB = new double[2];
+      MB[x] = rotatePQ[x] * Math.sqrt(3) / 6.0;
+      MB[y] = rotatePQ[y] * Math.sqrt(3) / 6.0;
 
-      double rvy = -vx;
+      double[] pontoB = new double[2];
+      pontoB[x] = Math.round(pontoMedio[x] + MB[x]);
+      pontoB[y] = Math.round(pontoMedio[y] + MB[y]);
 
-      double ux = rvx * Math.sqrt(3) / 6.0;
-      double uy = rvy * Math.sqrt(3) / 6.0;
-
-      double BxDb = Mx + ux;
-      double ByDb = My + uy;
-
-      int Ax = (int) Math.round(RAx);
-      int Ay = (int) Math.round(RAy);
-      int Bx = (int) Math.round(BxDb);
-      int By = (int) Math.round(ByDb);
-      int Cx = (int) Math.round(RCx);
-      int Cy = (int) Math.round(RCy);
-
-      kochCurve(px, py, Ax, Ay, l);
-      kochCurve(Bx, By, Cx, Cy, l);
-      kochCurve(Ax, Ay, Bx, By, l);
-      kochCurve(Cx, Cy, qx, qy, l);
+      kochCurve(px, py, (int) pontoA[x], (int) pontoA[y], l);
+      kochCurve((int) pontoB[x], (int) pontoB[y], (int) pontoC[x], (int) pontoC[y], l);
+      kochCurve((int) pontoA[x], (int) pontoA[y], (int) pontoB[x], (int) pontoB[y], l);
+      kochCurve((int) pontoC[x], (int) pontoC[y], qx, qy, l);
     }
   }
 
   public void regionFill(int x, int y, int reference_rgb) {
-
-    // caso o valor de cor do pixel (recebido como parâmetro)
-    // seja o mesmo da cor original do pixel inicial (aonde se inciou o processo de preenchimento)
-    // System.out.println("\ngetHeight: "+getHeight()+"\ngetWIdth: "+getWidth());
     if (getPixel(x, y) == reference_rgb) {
-      // System.out.println("x: "+x+"\ny: "+y+"\nreference: "+reference_rgb+"\n");
       setPixel(x, y);
-      if(x + 1 < getWidth()) regionFill(x+1, y, reference_rgb); //direita
-      if(y + 1 < getHeight()) regionFill(x, y+1, reference_rgb); //cima
-      if(x - 1 >= 0) regionFill(x-1, y, reference_rgb); //esquerda
-      if(y - 1 >= 0)regionFill(x, y-1, reference_rgb); // baixo
-    }
 
-    //        então tal pixel é colorido e,
-    //        em seguida, chamase o algoritmo recursivamente para os pixels vizinhos
-    //        (à esquerda, à direita, acima e abaixo);
-    // caso contrário, nada é feito.
-    
-    // Para obter-se a cor de um determinado pixel pode-se usar o método getPixel
-    // e para colorir um pixel (com a cor previamente denida pelo método setColor) pode-se usar o método
-    // setPixel (funções estas pertencentes à classe Image).
+      if (x + 1 < getWidth())
+        regionFill(x + 1, y, reference_rgb);
+      if (y + 1 < getHeight())
+        regionFill(x, y + 1, reference_rgb);
+      if (x - 1 >= 0)
+        regionFill(x - 1, y, reference_rgb);
+      if (y - 1 >= 0)
+        regionFill(x, y - 1, reference_rgb);
+    }
   }
 }
