@@ -1,9 +1,3 @@
-<style>
-    h1, h2, h3, p {
-        font-family: "Times New Roman", Times, serif;
-    }
-</style>
-
 ### ACH2003 - Introducao a Analise de Algoritmos
 ### EP1 - Recursividade aplicada à computação gráfica
 Jeniffer Florinda Martins da Silva, nusp **10377966**
